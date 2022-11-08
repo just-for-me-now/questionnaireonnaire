@@ -1,0 +1,81 @@
+﻿V1:
+
+Model:
+
+  ELEMENTS			RELATIONSHIPS													NAVIGATION VARIABLES						FOREIGN KEYS							OTHER VARIABLES
+
+- Question		 Has a list of answers (one-to-many)							Answers										-										Id, Text
+- Answer		 belongs to a question (many-to-one)							            								questionId								Id, Text
+- User			 has a list of responses (one-to-many)							Responses									-										Id, Email
+- Response		 responds a question by pointing to one of its answers			Question, Answer							userId, questionId, answerId			Id
+				 (one-to-one with both, many-to-one with the user)
+
+View:
+
+- Home ->	  /
+- Question -> /questions/{id}
+- User ->     /users/{id}
+
+Controller:
+
+- API -> 
+			User: POST a response -> POST /questions/{id}/answers/{id}
+			
+			Admin: POST, PATCH a question -> POST|PATCH /questions
+				   Not DELETE -> responses refer to questions, can't delete the question leaving the response -> soft-delete = disable
+
+- Question
+- User
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+V2:
+We need a way to provide an itinerary for a user
+
+View:
+
+- Home ->	  /					-> fill an email, get a cookie -> no cookies, a query parameter like id=ASjkcnsakdfjnkAJDSBkjd
+- Question -> /questions/{id}	-> cookie maps to user, user has 'next question' variable. No cookie, redirect to Home
+
+Model:
+
+  ELEMENTS			RELATIONSHIPS													NAVIGATION VARIABLES						FOREIGN KEYS							OTHER VARIABLES
+
+- User																																								NextQuestion
+- Session		 Belongs to a User (one-to-one)									User										userId									Id
+				 (one-to-one with both, many-to-one with the user)
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+V3:
+We don't need the cookie, we can just use /users/{id}/questions/{id}. Remove QuestionController. Allows the user to resume where he left by entering the email again. Add LastQuestion to User.
+
+Model:
+
+  ELEMENTS			RELATIONSHIPS													NAVIGATION VARIABLES						FOREIGN KEYS							OTHER VARIABLES
+
+- Question		 Has a list of answers (one-to-many)							Answers										-										Id, Text
+- Answer		 belongs to a question (many-to-one)							            								questionId								Id, Text
+- User			 has a list of responses (one-to-many)							Responses									-										Id, Email, NextQuestion, LastQuestion
+- Response		 responds a question by pointing to one of its answers			Question, Answer							userId, questionId, answerId			Id
+				 (one-to-one with both, many-to-one with the user)
+
+View:
+
+- Home ->	  /
+- Question -> /users/{id}/questions/{id}
+- User ->     /users/{id}
+
+Controller:
+
+- API -> 
+			
+			Admin: POST, PATCH a question -> POST|PATCH /questions
+				   Not DELETE -> responses refer to questions, can't delete the question leaving the response -> soft-delete = disable
+
+- User
+			User: POST a response -> POST /questions/{id}/answers/{id}
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+V3:
+From Home we need to POST the email
+In order to populate Question (the view) we need an object that has the question and the userId
+We need to modify the Home controller, Index action.

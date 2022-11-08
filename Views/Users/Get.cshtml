@@ -1,0 +1,26 @@
+﻿@model Questionnaireonnaire.Models.UserData
+
+<div>Email: @Model.Email</div>
+<ul>
+@{
+    @foreach(Response response in Model.Responses)
+    {
+            <li>
+                @response.Question.Text
+                <ul>
+                @foreach(Answer answer in response.Question.Answers)
+                {
+                    @if(answer.Id == response.Answer.Id)
+                    {
+                        <li style="background-color:darkolivegreen">@answer.Text</li>
+                    }
+                    else 
+                    {
+                        <li>@answer.Text</li>
+                    }
+                }
+                </ul>
+            </li>
+    }
+}
+</ul>

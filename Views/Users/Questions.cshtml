@@ -1,0 +1,17 @@
+﻿@model Questionnaireonnaire.ViewModels.QuestionData
+
+<form action="@Url.Action("Respond")" method="POST">
+<h4>@Model.Question.Text</h4>
+<input type="hidden" name="UserDataId" value="@Model.UserId" />
+<input type="hidden" name="QuestionId" value="@Model.Question.Id" />
+@{
+    foreach(Answer answer in @Model.Question.Answers)
+    {
+        <input type="radio" name="AnswerId" id="@answer.Id" value="@answer.Id">
+
+        <label for="@answer.Id">@answer.Text</label>
+        <br />
+    }
+}
+<button type="submit">Confirm</button>
+</form>
